@@ -75,7 +75,29 @@
         </li>
         
         
+        <li>
+            Categories:
+            <em>
+                
+                    
+                    <a href="/categories/tutorials">tutorials</a>
+                
+            </em>
+        </li>
+        
 
+        
+        <li>
+            <em>
+                
+                    
+                    <a href="/tags/ec2">#ec2</a>
+                
+                    , 
+                    <a href="/tags/terraform">#terraform</a>
+                
+            </em>
+        </li>
         
 
         <li>6 minute read</li>
@@ -118,7 +140,8 @@
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install terraform
 </span></span></code></pre></div><p>Wait till the command-line finishes the installation. To verify if Terraform was installed successfully, use this command.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>terraform -version
-</span></span></code></pre></div><p>Now that we have successfully installed Terraform on our system, it is time to install AWSCLI, the utility that will help us configure our AWS with credentials.</p>
+</span></span></code></pre></div><p><img src="/images/terraform-version.jpg" alt="Terraform Version"></p>
+<p>Now that we have successfully installed Terraform on our system, it is time to install AWSCLI, the utility that will help us configure our AWS with credentials.</p>
 <h2 id="install-awscli">Install AWSCLI</h2>
 <p>Although there are a few ways to install AWSCLI, we will use the method prescribed in the official documentation by Amazon.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&#34;</span> -o <span style="color:#e6db74">&#34;awscliv2.zip&#34;</span>
