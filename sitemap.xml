@@ -2,17 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://nyukeit.github.io/devopsnuke/</loc>
+    <loc>https://nyukeit.github.io/devopsblog/</loc>
     <lastmod>2022-11-24T09:52:18+01:00</lastmod>
   </url><url>
-    <loc>http://nyukeit.github.io/devopsnuke/posts/ec2-terraform-keypair-linux/</loc>
+    <loc>https://nyukeit.github.io/devopsblog/posts/ec2-terraform-keypair-linux/</loc>
     <lastmod>2022-11-24T09:52:18+01:00</lastmod>
   </url><url>
-    <loc>http://nyukeit.github.io/devopsnuke/posts/</loc>
+    <loc>https://nyukeit.github.io/devopsblog/posts/</loc>
     <lastmod>2022-11-24T09:52:18+01:00</lastmod>
   </url><url>
-    <loc>http://nyukeit.github.io/devopsnuke/categories/</loc>
+    <loc>https://nyukeit.github.io/devopsblog/categories/</loc>
   </url><url>
-    <loc>http://nyukeit.github.io/devopsnuke/tags/</loc>
+    <loc>https://nyukeit.github.io/devopsblog/tags/</loc>
   </url>
 </urlset>
