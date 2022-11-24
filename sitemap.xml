@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>http://nyukeit.github.io/devopsnuke/</loc>
+    <lastmod>2022-11-24T09:52:18+01:00</lastmod>
+  </url><url>
+    <loc>http://nyukeit.github.io/devopsnuke/posts/ec2-terraform-keypair-linux/</loc>
+    <lastmod>2022-11-24T09:52:18+01:00</lastmod>
+  </url><url>
+    <loc>http://nyukeit.github.io/devopsnuke/posts/</loc>
+    <lastmod>2022-11-24T09:52:18+01:00</lastmod>
+  </url><url>
+    <loc>http://nyukeit.github.io/devopsnuke/categories/</loc>
+  </url><url>
+    <loc>http://nyukeit.github.io/devopsnuke/tags/</loc>
+  </url>
+</urlset>

@@ -1,0 +1,244 @@
+<!doctype html>
+
+<html lang="en-us">
+
+<head>
+  <title>Ec2 Terraform Keypair Linux - DevOps Nuke</title>
+  <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="The HTML5 Herald" />
+<meta name="author" content="Example" /><meta property="og:title" content="Ec2 Terraform Keypair Linux" />
+<meta property="og:description" content="In this article, we will go through the process of creating an EC2 instance in your AWS account using Terraform and AWSCLI. We will also see how we can connect to the newly created instance using SSH." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://nyukeit.github.io/devopsnuke/posts/ec2-terraform-keypair-linux/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-24T09:52:18+01:00" />
+<meta property="article:modified_time" content="2022-11-24T09:52:18+01:00" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ec2 Terraform Keypair Linux"/>
+<meta name="twitter:description" content="In this article, we will go through the process of creating an EC2 instance in your AWS account using Terraform and AWSCLI. We will also see how we can connect to the newly created instance using SSH."/>
+
+<meta name="generator" content="Hugo 0.106.0">
+    
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="http://nyukeit.github.io/devopsnuke/fontawesome/css/all.min.css" />
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab|Ruda" />
+  
+  
+  <link rel="stylesheet" type="text/css" href="http://nyukeit.github.io/devopsnuke/css/styles.css" /></head>
+
+<body>
+  <div id="container">
+    <header>
+      
+      <h1>
+        <a href="http://nyukeit.github.io/devopsnuke/">DevOps Nuke</a>
+      </h1>
+
+      <ul id="social-media">
+             <li>
+               <a href="https://github.com/nyukeit" title="GitHub">
+               <i class="fab fa-github fa-lg"></i>
+               </a>
+             </li>
+      </ul>
+      
+      <p><em>A blog to showcase my DevOps Projects</em></p>
+      
+    </header>
+
+    
+<nav>
+    <ul>
+        
+    </ul>
+</nav>
+
+
+    <main>
+
+
+
+
+<article>
+
+    <h1>Ec2 Terraform Keypair Linux</h1>
+
+    
+      <aside>
+    <ul>
+        <li>
+            <time class="post-date" datetime="2022-11-24T09:52:18&#43;01:00">Nov 24, 2022</time>
+        </li>
+        
+        
+
+        
+
+        <li>6 minute read</li>
+    </ul>
+</aside>
+
+    
+
+    
+      
+<div class="featured_image">
+    <a href="http://nyukeit.github.io/devopsnuke/posts/ec2-terraform-keypair-linux/" title="Ec2 Terraform Keypair Linux">
+        <img src="">
+    </a>
+</div>
+
+
+    
+
+    <p>In this article, we will go through the process of creating an EC2 instance in your AWS account using Terraform and AWSCLI. We will also see how we can connect to the newly created instance using SSH. This article makes use of Ubuntu 22.04 but the commands should work on any linux, with only needing to replace OS specific commands like apt-get.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ol>
+<li>AWS Account</li>
+<li>Linux (this article uses Ubuntu 22.04)</li>
+</ol>
+<p>##Install Terraform</p>
+<p>To begin with, we first need to install gnupg and software-properties-common, if not already present.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get update
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install -y gnupg software-properties-common
+</span></span></code></pre></div><p>After installing these, we need to add the HashiCorp GPG Key to the Ubuntu system.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget -O- https://apt.releases.hashicorp.com/gpg | <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>gpg --dearmor | <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+</span></span></code></pre></div><p>Now, let&rsquo;s go ahead and add the HashiCorp repository to Ubuntu. This repository will allow us to find the Terraform software on the internet.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">https://apt.releases.hashicorp.com </span><span style="color:#66d9ef">$(</span>lsb_release -cs<span style="color:#66d9ef">)</span><span style="color:#e6db74"> main&#34;</span> | <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>sudo tee /etc/apt/sources.list.d/hashicorp.list
+</span></span></code></pre></div><p>And finally, it&rsquo;s time to install Terraform itself.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get update
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install terraform
+</span></span></code></pre></div><p>Wait till the command-line finishes the installation. To verify if Terraform was installed successfully, use this command.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>terraform -version
+</span></span></code></pre></div><p>Now that we have successfully installed Terraform on our system, it is time to install AWSCLI, the utility that will help us configure our AWS with credentials.</p>
+<h2 id="install-awscli">Install AWSCLI</h2>
+<p>Although there are a few ways to install AWSCLI, we will use the method prescribed in the official documentation by Amazon.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&#34;</span> -o <span style="color:#e6db74">&#34;awscliv2.zip&#34;</span>
+</span></span><span style="display:flex;"><span>unzip awscliv2.zip
+</span></span><span style="display:flex;"><span>sudo ./aws/install
+</span></span></code></pre></div><p>Once again, we verify the successfull installation of AWSLI by checking its version by typing in the following command.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws --version
+</span></span></code></pre></div><h2 id="aws-credentials">AWS Credentials</h2>
+<p>We will assume by this point, you have an AWS account created. If not, now is the time to do it. Log in to your AWS account and on the top right corner, click on your profile picture. Go to Security Credentials and create a credential.</p>
+<p>Note down the Access Key and Secret key somewhere safe.</p>
+<p>Come back to your terminal and type the following command</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws configure
+</span></span></code></pre></div><p>AWS will present you with options to paste/type the following one by one. Press enter after pasting in each line. Note that [none] means there is no data configured for that key yet.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Access Key <span style="color:#f92672">[</span>none<span style="color:#f92672">]</span>: &lt;paste your access key here&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Secret Key <span style="color:#f92672">[</span>none<span style="color:#f92672">]</span>: &lt;paste your secrete key here&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Region <span style="color:#f92672">[</span>none<span style="color:#f92672">]</span>: &lt;type in the region of your AWS Account. Eg. us-east-1&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Output format <span style="color:#f92672">[</span>none<span style="color:#f92672">]</span>: &lt;you can leave this blank&gt;
+</span></span></code></pre></div><p>Now we have our AWSCLI configured to access the AWS account, however, this is not enough to launch an EC2 instance. For that, we need a keypair.</p>
+<p>Sidenote: This article makes use of the root account in AWS. You may want/need to use an IAM user with permission policies if required.</p>
+<p>Again, we confirm everything is in place by verifying. Seeing is believing.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd /.aws
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat credentials
+</span></span></code></pre></div><h2 id="ec2-keypair">EC2 Keypair</h2>
+<p>In your AWS dashboard, go to EC2. If you can&rsquo;t find a direct link anywhere, type EC2 in the search box on top.</p>
+<p>On the left navigation, go to Keypair. Click on Create.</p>
+<p>Give a suitable name to your keypair file and select RSA and PEM and click on Save. This will download the PEM file to your system.</p>
+<p>In terminal, create a folder for your project.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir myproject
+</span></span></code></pre></div><p>If you are able to, move the keypair file to your project folder. If not, open the PEM file in a text editor, copy the contents.</p>
+<p>In your terminal, navigate to your project folder and type the following commands.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano mykeyfile.pem
+</span></span></code></pre></div><p>You can replace mykeyfile with any name for the file you want.</p>
+<p>Now paste the content of the download pem file into the nano editor and press <em>Ctrl + x + y</em>. This will create the same pem file in your terminal.</p>
+<p>We will use this keypair file to ssh into the newly created EC2 Instance.</p>
+<h2 id="creating-terraform-scripts">Creating Terraform Scripts</h2>
+<p>Now that we have the prerequisites in place, let&rsquo;s create a Terraform plan and apply it to create our instance.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd myproject
+</span></span></code></pre></div><p>Once inside your project folder, create your first Terraform file which will contain the same credentials that we used for AWSCLI</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano creds.tf
+</span></span></code></pre></div><p>Inside the nano editor, type/paste the following</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">provider &#34;aws&#34; {</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">access_key = &#34;&lt;your aws access key&gt;&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">secret_key = &#34;&lt;your aws secret key&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">region = &#34;&lt;your aws region&gt;&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Save this file by using the combination <em>Ctrl + x + y</em></p>
+<p>Now it&rsquo;s time to create the main Terraform script that will actually execute the commands to launch our EC2 instance.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano main.tf
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">resource &#34;aws_instance&#34; &#34;myproject&#34; {</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">ami = &#34;ami-2757f631&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">instance_type = &#34;t2.micro&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">key_name = &#34;mykeyfile&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>NOTE: AMI is the Amazon Machine Image and the alphanumeric corresponds to a particular image ID. You can search for the AMI that you wish to launch. The instance type must match with the type of your AMI. In the example above, the AMI-2757f631 is an Ubuntu Xenial 16.04 image with the type t2 micro.</p>
+<p>We now have the Terraform plan ready and we need to initiate it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>terraform init
+</span></span></code></pre></div><p>Once the configuration is initialized, we need to apply it for Terraform to create our EC2 instance.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>terraform apply
+</span></span></code></pre></div><p>When prompted, type <strong>yes</strong></p>
+<p>Terraform will now begin to create the EC2 instance. Not that this may take up to a minute and a half to finish depending on the image.</p>
+<p>To verify the creation of the instance, go to your EC2 dashboard and go to Instance and you should see your instance in the running state.</p>
+<h2 id="connecting-to-ec2-instance-using-ssh">Connecting to EC2 Instance using SSH</h2>
+<p>The reason why we initiated our instance using a keypair file was to be able to SSH into it after creation. And we will see how this became very easy now.</p>
+<p>The first step is to go to your EC2 dashboard and click on <strong>Security Groups</strong>.</p>
+<p>There, select your security group and click on <strong>Inbound Rules</strong> tab. Click on Edit Inbound Rules</p>
+<p>There might be a default rule already added. Leave it as it is.</p>
+<p>Click on <strong>Add Rule</strong> and select the protocol as <strong>SSH</strong> and source as <strong>Custom</strong>. Click on the search box next to Custom and select <strong>0.0.0.0/0</strong> and save the rule.</p>
+<p>Your EC2 instance is now ready to accept incoming SSH connections.</p>
+<p>Before moving ahead, go back to your EC2 dashboard and go to Instances. Select your instance. This will show a lot of data about your instance. The one we are interested in is your <strong>IPv4 Public DNS</strong>. Copy this address.</p>
+<p>Now go to your terminal and type the following</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ssh -i <span style="color:#e6db74">&#34;mykeyfile&#34;</span> ubuntu@ip4-public-dns
+</span></span></code></pre></div><p>Replace ip4-public-dns with the DNS that you copied from your instance.</p>
+<p>Note: Amazon AWS has default usernames for AMIs based on the type of image which can be found on <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html">here</a></p>
+<p>When prompted, type <strong>yes</strong>.</p>
+<p>Voila, you have now entered your EC2 instance using SSH and you can use this as any Ubuntu machine and install software on it.</p>
+<p>I hope this article was able to help you get your EC2 instance fired up using Terraform.</p>
+
+
+</article>
+
+
+<section class="post-nav">
+    <ul>
+        <li>
+        
+        </li>
+        <li>
+        
+        </li>
+    </ul>
+</section>
+  
+    
+    
+  
+
+
+
+
+
+</main>
+    <footer>
+        <ul>
+            <li>
+                <h6>© 2022 - Nyukeit | 
+                    Rendered by <a href="https://gohugo.io" title="Hugo">Hugo</a> |
+                    <a href="http://nyukeit.github.io/devopsnukeindex.xml">Subscribe </a></h6>
+            </li>
+            
+            
+        </ul>
+    </footer>
+</div>
+<script src="http://nyukeit.github.io/devopsnuke/js/scripts.js"></script>
+
+
+</body>
+
+</html>
+
