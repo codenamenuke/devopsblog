@@ -143,16 +143,16 @@ This is a tutorial of the project &ldquo;Provisioning an EC2 Instance using Terr
 </span></span></code></pre></div><p>And finally, it&rsquo;s time to install Terraform itself.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get update
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install terraform
-</span></span></code></pre></div><p>Wait till the command-line finishes the installation. To verify if Terraform was installed successfully, use this command.</p>
+</span></span></code></pre></div><p>After completion, I verified if the installation was successful using this command:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>terraform --version
 </span></span></code></pre></div><p><img src="/terraform-version.png" alt="Terraform Version"></p>
-<p>Now that we have successfully installed Terraform on our system, it is time to install AWSCLI, the utility that will help us configure our AWS with credentials.</p>
+<p>Now that Terraform is installed, it was time to install AWSCLI, the utility to configure our AWS with credentials.</p>
 <h2 id="install-awscli">Install AWSCLI</h2>
-<p>Although there are a few ways to install AWSCLI, we will use the method prescribed in the official documentation by Amazon.</p>
+<p>Although there are a few ways to install AWSCLI, I used the method prescribed in the official documentation by Amazon.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&#34;</span> -o <span style="color:#e6db74">&#34;awscliv2.zip&#34;</span>
 </span></span><span style="display:flex;"><span>unzip awscliv2.zip
 </span></span><span style="display:flex;"><span>sudo ./aws/install
-</span></span></code></pre></div><p>Once again, we verify the successfull installation of AWSLI by checking its version by typing in the following command.</p>
+</span></span></code></pre></div><p>Once again, I verified the successfull installation of AWSLI by checking its version by typing in the following command:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>aws --version
 </span></span></code></pre></div><p><img src="/aws-version.png" alt="AWS Version"></p>
 <h2 id="aws-credentials">AWS Credentials</h2>
@@ -181,6 +181,8 @@ This is a tutorial of the project &ldquo;Provisioning an EC2 Instance using Terr
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir ec2tf
 </span></span></code></pre></div><p>I wasn&rsquo;t able to move the downloaded PEM file to the lab system directly. So I created the PEM file inside the terminal and pasted the contents of the downloaded file.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano ec2tf.pem
+</span></span></code></pre></div><p>Now we will change the permissions of this key file, without which EC2 will reject our connection.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo chmod <span style="color:#ae81ff">400</span> ec2tf.pem
 </span></span></code></pre></div><p>We will use this keypair file to ssh into the newly created EC2 Instance.</p>
 <h2 id="creating-terraform-scripts">Creating Terraform Scripts</h2>
 <p>Now that we have the prerequisites in place, let&rsquo;s create a Terraform plan and apply it to create our instance.</p>
@@ -220,8 +222,7 @@ This is a tutorial of the project &ldquo;Provisioning an EC2 Instance using Terr
 <p>Before moving ahead, I needed the public IPv4 DNS address of my instance. I found this be going to Instances in the EC2 dashboard and selecting my running instance.</p>
 <p>Now to login to the EC2 instance, we type the following</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ssh -i <span style="color:#e6db74">&#34;ec2tf&#34;</span> ubuntu@ip4-public-dns
-</span></span></code></pre></div><p>Replace ip4-public-dns with the DNS that you copied from your instance.</p>
-<p>Note: I found that Amazon AWS has default usernames for AMIs based on the type of image which can be found on <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html">here</a></p>
+</span></span></code></pre></div><p>Note: I found that Amazon AWS has default usernames for AMIs based on the type of image which can be found on <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html">here</a></p>
 <p>When prompted, type <strong>yes</strong>.</p>
 <p><img src="/ssh-ec2-instance.png" alt="Succesfull Connection to EC2"></p>
 <p>With this, I successfully logged in to my new EC2 instance using SSH. Now it was time to install Java, Python and Jenkins.</p>
