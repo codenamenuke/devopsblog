@@ -221,7 +221,7 @@ This is a tutorial of the project &ldquo;Provisioning an EC2 Instance using Terr
 <p>My EC2 instance was now ready to accept incoming SSH connections.</p>
 <p>Before moving ahead, I needed the public IPv4 DNS address of my instance. I found this be going to Instances in the EC2 dashboard and selecting my running instance.</p>
 <p>Now to login to the EC2 instance, we type the following</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ssh -i <span style="color:#e6db74">&#34;ec2tf&#34;</span> ubuntu@ip4-public-dns
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo ssh -i <span style="color:#e6db74">&#34;ec2tf.pem&#34;</span> ubuntu@ip4-public-dns
 </span></span></code></pre></div><p>Note: I found that Amazon AWS has default usernames for AMIs based on the type of image which can be found on <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/connection-prereqs.html">here</a></p>
 <p>When prompted, type <strong>yes</strong>.</p>
 <p><img src="/ssh-ec2-instance.png" alt="Succesfull Connection to EC2"></p>
