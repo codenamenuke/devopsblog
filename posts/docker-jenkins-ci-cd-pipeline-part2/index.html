@@ -1,0 +1,382 @@
+<!doctype html>
+
+<html lang="en-us">
+
+<head>
+  <title>Docker Jenkins Ci Cd Pipeline Part2 - DevOps Nuke</title>
+  <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="The HTML5 Herald" />
+<meta name="author" content="Example" /><meta property="og:title" content="Docker Jenkins Ci Cd Pipeline Part2" />
+<meta property="og:description" content="This is a continuation of the tutorial for building a Docker Jenkins pipeline to deploy a simple Python app using Git and GitHub. The first part of the tutorial can be found here." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/docker-jenkins-ci-cd-pipeline-part2/" /><meta property="og:image" content="/coverimg.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-29T12:06:06+01:00" />
+<meta property="article:modified_time" content="2022-11-29T12:06:06+01:00" />
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="/coverimg.png"/>
+
+<meta name="twitter:title" content="Docker Jenkins Ci Cd Pipeline Part2"/>
+<meta name="twitter:description" content="This is a continuation of the tutorial for building a Docker Jenkins pipeline to deploy a simple Python app using Git and GitHub. The first part of the tutorial can be found here."/>
+
+<meta name="generator" content="Hugo 0.106.0">
+    
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab|Ruda" />
+  
+  
+  <link rel="stylesheet" type="text/css" href="/css/styles.css" /></head>
+
+<body>
+  <div id="container">
+    <header>
+      
+      <h1>
+        <a href="/">DevOps Nuke</a>
+      </h1>
+
+      <ul id="social-media">
+             <li>
+               <a href="https://github.com/nyukeit" title="GitHub">
+               <i class="fab fa-github fa-lg"></i>
+               </a>
+             </li>
+             <li>
+               <a href="https://linkedin.com/in/nyukeit" title="LinkedIn">
+               <i class="fab fa-linkedin fa-lg"></i>
+               </a>
+             </li>
+      </ul>
+      
+      <p><em>A blog to showcase my DevOps Projects</em></p>
+      
+    </header>
+
+    
+<nav>
+    <ul>
+        
+    </ul>
+</nav>
+
+
+    <main>
+
+
+
+
+<article>
+
+    <h1>Docker Jenkins Ci Cd Pipeline Part2</h1>
+
+    
+      <aside>
+    <ul>
+        <li>
+            <time class="post-date" datetime="2022-11-29T12:06:06&#43;01:00">Nov 29, 2022</time>
+        </li>
+        
+        
+        <li>
+            Categories:
+            <em>
+                
+                    
+                    <a href="/categories/tutorials">tutorials</a>
+                
+            </em>
+        </li>
+        
+
+        
+        <li>
+            <em>
+                
+                    
+                    <a href="/tags/jenkins">#jenkins</a>
+                
+                    , 
+                    <a href="/tags/docker">#docker</a>
+                
+                    , 
+                    <a href="/tags/python">#python</a>
+                
+                    , 
+                    <a href="/tags/cicd">#cicd</a>
+                
+                    , 
+                    <a href="/tags/pipeline">#pipeline</a>
+                
+            </em>
+        </li>
+        
+
+        <li>8 minute read</li>
+    </ul>
+</aside>
+
+    
+
+    
+      
+<div class="featured_image">
+    <a href="/posts/docker-jenkins-ci-cd-pipeline-part2/" title="Docker Jenkins Ci Cd Pipeline Part2">
+        <img src="/coverimg.png">
+    </a>
+</div>
+
+
+    
+
+    <p>This is a continuation of the tutorial for building a Docker Jenkins pipeline to deploy a simple Python app using Git and GitHub. The first part of the tutorial can be found <a href="">here</a>.</p>
+<h2 id="installing-jenkins">Installing Jenkins</h2>
+<p>We now have the basics ready for deploying our app. Let&rsquo;s install the remaining software to complete our pipeline.</p>
+<p>We begin by importing the GPG key which will verify the integrity of the package.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  /usr/share/keyrings/jenkins-keyring.asc &gt; /dev/null
+</span></span></code></pre></div><p>Next, we add the Jenkins softwarey repository to the sources list and provide the authentication key.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo deb <span style="color:#f92672">[</span>signed-by<span style="color:#f92672">=</span>/usr/share/keyrings/jenkins-keyring.asc<span style="color:#f92672">]</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  https://pkg.jenkins.io/debian-stable binary/ | sudo tee <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  /etc/apt/sources.list.d/jenkins.list &gt; /dev/null
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt update
+</span></span></code></pre></div><p><img src="" alt="Jenkins Key and Source"></p>
+<p>Now, we install Jenkins</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install -y jenkins
+</span></span></code></pre></div><p>Wait till the entire installation process is over and you get back control of the terminal.</p>
+<p><img src="" alt="Jenkins Installation"></p>
+<p>To verify if Jenkins was installed correctly, we will check if the Jenkins service is running.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl status jenkins.service
+</span></span></code></pre></div><p><img src="" alt="Jenkins Running"></p>
+<p>Press <strong>Q</strong> to regain control.</p>
+<h2 id="jenkins-configuration">Jenkins Configuration</h2>
+<p>We have verified that the Jenkins service is now running. This means we can go ahead and configure it using our browser.</p>
+<p>Open your browser and type this in the address bar:</p>
+<pre tabindex="0"><code>localhost:8080
+</code></pre><p>You should see the Unlock Jenkins page.</p>
+<p><img src="" alt="Unlock Jenkins Page"></p>
+<p>Jenkins generated a default password when you installed it. To locate this password we will use the command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+</span></span></code></pre></div><p><img src="" alt="Jenkins Default Password"></p>
+<p>Copy this password and paste it into the box on the welcome page.</p>
+<p>On the next page, select &lsquo;Install Suggested plugins&rsquo;</p>
+<p><img src="" alt="Jenkins Suggested Plugins"></p>
+<p>You should see Jenkins installing the plugins.</p>
+<p><img src="" alt="Jenkins Plugin Install"></p>
+<p>Next, we will create an Admin user. Fill in the form to create your user. Alternatively, you can also skip this and continue as admin.</p>
+<p><img src="" alt="Jenkins Admin User"></p>
+<p>Click on &lsquo;Save and Continue&rsquo;</p>
+<p>On the <strong>Instance Configuration</strong> page, Jenkins will show the URL where it can be accessed. Leave it and click &lsquo;Save and Finish&rsquo;</p>
+<p><img src="" alt="Jenkins Instance URL"></p>
+<p>Click on &lsquo;Start Using Jenkins&rsquo;. You will land on a welcome page like this:</p>
+<p><img src="" alt="Jenkins Welcome"></p>
+<p>We have now successfully setup Jenkins. Let&rsquo;s go back to the terminal to install Docker.</p>
+<h2 id="installing-docker">Installing Docker</h2>
+<p>First we need to uninstall any previous Docker stuff, if any.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get remove docker docker-engine docker.io containerd runc
+</span></span></code></pre></div><p>Most likely, nothing will be removed since we are working with a fresh install of Ubuntu.</p>
+<p>We will use the command line to install Docker.</p>
+<pre tabindex="0"><code>sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+</code></pre><p>Next, we will add Docker&rsquo;s GPG key, just like we did with Jenkins.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo mkdir -p /etc/apt/keyrings
+</span></span></code></pre></div><pre tabindex="0"><code>curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+</code></pre><p>Now, we will setup the repository</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  <span style="color:#e6db74">&#34;deb [arch=</span><span style="color:#66d9ef">$(</span>dpkg --print-architecture<span style="color:#66d9ef">)</span><span style="color:#e6db74"> signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  </span><span style="color:#66d9ef">$(</span>lsb_release -cs<span style="color:#66d9ef">)</span><span style="color:#e6db74"> stable&#34;</span> | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</span></span></code></pre></div><p>Next we will install the Docker Engine.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get update
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+</span></span></code></pre></div><p><img src="" alt="Docker Installation"></p>
+<p>Now verify the installation by typing</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker version
+</span></span></code></pre></div><p>Notice that you will get an error for permission denied while connecting to Docker daemon socket. This is because it requires a root user. This means you would need to prefix sudo every time you want to run Docker commands. This is not ideal. We can fix this by making a docker group.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo groupadd docker
+</span></span></code></pre></div><p>The docker group may already exist. Now let&rsquo;s add the user to this group.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo usermod -aG docker $USER
+</span></span></code></pre></div><p>Apply changes to Unix groups by typing the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>newgrp docker
+</span></span></code></pre></div><blockquote>
+<p>Note: If you are following this tutorial on a VM, you may need to restart your instance for changes to take effect.</p>
+</blockquote>
+<p>Let&rsquo;s verify that we can now connect to the Docker Engine.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker version
+</span></span></code></pre></div><p><img src="" alt="Docker Engine Version"></p>
+<p>As we can see, Docker is now fully functional with a connection to the Docker Engine.</p>
+<p>We will now create the Dockerfile that will build the Docker image.</p>
+<h2 id="creating-the-dockerfile">Creating the Dockerfile</h2>
+<p>Inside your terminal, within your folder, create the Dockerfile using the nano editor.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano Dockerfile
+</span></span></code></pre></div><p>Type this text inside the editor:</p>
+<pre tabindex="0"><code>FROM python:3.8
+WORKDIR /src
+COPY . /src
+RUN pip install flask
+RUN pip install flask_restful
+EXPOSE 3333
+ENTRYPOINT [&#34;python&#34;]
+CMD [ &#34;python&#34;, &#34;./src/helloworld.py&#34;]
+</code></pre><p><img src="" alt="Dockerfile"></p>
+<h2 id="building-the-docker-image">Building the Docker Image</h2>
+<p>From the Dockerfile, we will now build a Docker image.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker build -t helloworldpython .
+</span></span></code></pre></div><p><img src="" alt="Docker Build"></p>
+<p>Now let&rsquo;s create a test container and run it a browser to check if our app is displaying correctly.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -p 3333:3333 helloworldpython
+</span></span></code></pre></div><p><img src="" alt="Docker Run Prints Hello World"></p>
+<p>As we can see, when we run this container, it prints the output Hello World! in the browser.</p>
+<p>Now let&rsquo;s see how we can automate this printing every time we make a change to our python code.</p>
+<h2 id="creating-the-jenkinsfile">Creating the Jenkinsfile</h2>
+<p>We will create a Jenkinsfile which will elaborate a step-by-step process of building the image from the Dockerfile, pushing it to the registry, pulling it back from the registry and running it as a container.</p>
+<p>Every change pushed to the GitHub repository will trigger this chain of events.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano Jenkinsfile
+</span></span></code></pre></div><p>In the nano editor, we will use the following code as our Jenkinsfile.</p>
+<pre tabindex="0"><code>node {
+	def application = &#34;springbootapp&#34;
+	def dockerhubaccountid = &#34;nyukeit&#34;
+	stage(&#39;Clone repository&#39;) {
+		checkout scm
+	}
+
+	stage(&#39;Build image&#39;) {
+		app = docker.build(&#34;${dockerhubaccountid}/${application}:${BUILD_NUMBER}&#34;)
+	}
+
+	stage(&#39;Push image&#39;) {
+		withDockerRegistry([ credentialsId: &#34;dockerHub&#34;, url: &#34;&#34; ]) {
+		app.push()
+		app.push(&#34;latest&#34;)
+	}
+	}
+
+	stage(&#39;Deploy&#39;) {
+		sh (&#34;docker run -d -p 3333:3333 ${dockerhubaccountid}/${application}:${BUILD_NUMBER}&#34;)
+	}
+	
+	stage(&#39;Remove old images&#39;) {
+		// remove docker pld images
+		sh(&#34;docker rmi ${dockerhubaccountid}/${application}:latest -f&#34;)
+   }
+}
+</code></pre><p>Now that our Jenkinsfile is ready, let&rsquo;s push all of our source code to GitHub.</p>
+<h2 id="pushing-files-to-github">Pushing files to GitHub</h2>
+<p>First, let&rsquo;s check the status of our local repo.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git status
+</span></span></code></pre></div><p><img src="" alt="Git Status"></p>
+<p>As we can see, there are no commits yet and there are untracked files and folders. Let&rsquo;s tell Git to track them so we can push them to our remote repo.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git add *
+</span></span></code></pre></div><p>This will add all the files present in the git scope.</p>
+<p>Let&rsquo;s once again check the status.</p>
+<p><img src="" alt="Git Status after Add"></p>
+<p>As we can see, Git is now tracking our files and they are ready to be commit. The commit function pushes the files to the staging area where they will be ready to be pushed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;First commit of the python app&#34;</span>
+</span></span></code></pre></div><p><img src="" alt="Git Commit"></p>
+<p>Now, it&rsquo;s time to push our files.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git push -u origin main
+</span></span></code></pre></div><p>Let&rsquo;s go to our repo on GitHub to verify that our push was successful.</p>
+<p><img src="" alt="GitHub Files pushed"></p>
+<h2 id="creating-jenkins-credentials">Creating Jenkins Credentials</h2>
+<p>In the Jenkins dashboard, go to <strong>Manage Jenkins</strong>.</p>
+<p><img src="" alt="Manage Jenkins"></p>
+<p>In the Security section, go to <strong>Manage Credentials</strong>.</p>
+<p><img src="" alt="Manage Credentials"></p>
+<p>In the credentials section, click on System. On the page that opens, click on <strong>Global Credentials Unrestricted</strong></p>
+<p>Now click on <strong>Add Credentials</strong>.</p>
+<p>Keep &lsquo;Kind&rsquo; as &lsquo;Username and Password&rsquo;</p>
+<p>In &lsquo;username&rsquo; type your Docker Hub username.</p>
+<p>In &lsquo;password&rsquo; type your Docker Hub password.</p>
+<p>In &lsquo;ID&rsquo;, type &lsquo;dockerHub&rsquo;</p>
+<p>Finally, click on <strong>Create</strong></p>
+<p><img src="" alt="Docker Credentials in Jenkins"></p>
+<h2 id="creating-a-jenkins-job">Creating a Jenkins Job</h2>
+<p>To close our pipeline, we will create a Jenkins job which will be triggered when there are changes to our GitHub repo.</p>
+<blockquote>
+<p>Note: In Jenkins, if not already installed, install the plugins Docker and Docker Pipeline. Restart your Jenkins instance after installation.</p>
+</blockquote>
+<p>Click on <strong>New Item</strong> in your Jenkins dashboard. Enter any name you like. Select <strong>Pipeline</strong> and click okay.</p>
+<p>In the configuration page, type in any description that you want.</p>
+<p><img src="" alt="Jenkins Config 1"></p>
+<p>In &lsquo;Build Triggers&rsquo; select <strong>Poll SCM</strong>.</p>
+<p>In the &lsquo;Pipeline&rsquo; section, in &lsquo;definition&rsquo; select <strong>Pipeline Script from SCM</strong>. This will look for the Jenkinsfile that we uploaded to our repo in GitHub and apply it.</p>
+<p>Next, in SCM in the Repositories section, copy and paste your GitHub repo <strong>HTTPS URL</strong>.</p>
+<p>In &lsquo;Branches to Build&rsquo;, by default, it will have master. Change it to main, since our branch is called main.</p>
+<p>Make sure the &lsquo;Script Path&rsquo; has &lsquo;Jenkinsfile&rsquo; already populated. If not, you can type it out.</p>
+<p>Click on <strong>Save</strong>.</p>
+<p>Now our Jenkins job is created. It is time to see the whole pipeline in action.</p>
+<p>Click on &lsquo;Build Now&rsquo;. This will trigger all the steps and if we have all the configurations correct, it should have our container running with the python app and our custom image uploaded on Docker Hub. Let&rsquo;s verify this.</p>
+<p><img src="" alt="Docker Hub Imnage visible"></p>
+<p>As we can see, our custom built image is now available in our Docker Hub account.</p>
+<p>Now let&rsquo;s verify if the container is running.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker ps
+</span></span></code></pre></div><p>Again, we can see that our container is running. Notice my pythonapp:5? That&rsquo;s because I had four failed builds before this completed successfully.</p>
+<h2 id="committing-changes-to-python-app">Committing changes to Python App</h2>
+<p>To see the full automated flow in action, let&rsquo;s change the python app a bit and go back to our browser to see the changes being reflected automatically.</p>
+<p>We have changed the output text from <em>Hello World!</em> to <em>Hello World! I am learning DevOps!</em></p>
+<p>Save the file and push the file to GitHub.</p>
+<p>As we can see, this action triggered an automatic job creation on Jenkins, which resulted in Build No. 2 of our app.</p>
+<p><img src="" alt="Jenkins Build 2"></p>
+<p>We can now see that our app has 2 builds. In the first build, we can see &rsquo;no changes&rsquo; because we manually triggered the first build after creating our repository. All subsequent commits will result in a new build.</p>
+<p>We can see that Build No 2 mentions there was 1 commit.</p>
+<p>As for our webapp, the message displayed has now changed.</p>
+<p><img src="" alt="Hello World Changed"></p>
+<p>This is how we can create a Docker-Jenkins automation.</p>
+<h2 id="resources">Resources</h2>
+<p><a href="https://www.jenkins.io/doc/book/installing/linux/#debianubuntu">Installing Jenkins</a></p>
+<p><a href="https://docs.docker.com/engine/install/ubuntu/">Installing Docker on Ubuntu</a></p>
+<p><a href="https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket"></a></p>
+<p><a href="https://runnable.com/docker/python/dockerize-your-python-application">Dockerize your Python Application</a></p>
+<p><a href="https://www.section.io/engineering-education/how-to-containerize-a-python-application/">Containerize A Python Application</a></p>
+
+
+</article>
+
+
+<section class="post-nav">
+    <ul>
+        <li>
+        
+            <a href="/posts/docker-jenkins-ci-cd-pipeline-part1/"><i class="fa fa-chevron-circle-left"></i> Building a Docker-Jenkins CI/CD Pipeline for a Python App (Part 1)</a>
+        
+        </li>
+        <li>
+        
+        </li>
+    </ul>
+</section>
+  
+    
+    
+  
+
+
+
+
+
+</main>
+    <footer>
+        <ul>
+            <li>
+                <h6>© 2022 - Nyukeit | 
+                    Rendered by <a href="https://gohugo.io" title="Hugo">Hugo</a> |
+                    <a href="/index.xml">Subscribe </a></h6>
+            </li>
+            
+            
+        </ul>
+    </footer>
+</div>
+<script src="/js/scripts.js"></script>
+
+
+</body>
+
+</html>
+
