@@ -167,7 +167,8 @@
 <p><img src="/jenkins-install-plugins.png" alt="Jenkins Suggested Plugins"></p>
 <p>You should see Jenkins installing the plugins.</p>
 <p><img src="/jenkins-plugins-installing.png" alt="Jenkins Plugin Install"></p>
-<p>Click on &lsquo;Skip and Continue as Admin&rsquo;</p>
+<p>Once the installation has completed, click on Continue.</p>
+<p>On the Create Admin User page, click &lsquo;Skip and Continue as Admin&rsquo;. You can alternatively create a separate Admin user, but be sure to add it to Docker group.</p>
 <p>Click on &lsquo;Save and Continue&rsquo;</p>
 <p>On the <strong>Instance Configuration</strong> page, Jenkins will show the URL where it can be accessed. Leave it and click &lsquo;Save and Finish&rsquo;</p>
 <p>Click on &lsquo;Start Using Jenkins&rsquo;. You will land on a welcome page like this:</p>
@@ -178,16 +179,16 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get remove docker docker-engine docker.io containerd runc
 </span></span></code></pre></div><p>Most likely, nothing will be removed since we are working with a fresh install of Ubuntu.</p>
 <p>We will use the command line to install Docker.</p>
-<pre tabindex="0"><code>sudo apt-get install \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-</code></pre><p><img src="/docker-install-prereqs.png" alt="Docker Prerequisites"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    ca-certificates <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    curl <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    gnupg <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    lsb-release
+</span></span></code></pre></div><p><img src="/docker-install-prereqs.png" alt="Docker Prerequisites"></p>
 <p>Next, we will add Docker&rsquo;s GPG key, just like we did with Jenkins.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo mkdir -p /etc/apt/keyrings
-</span></span></code></pre></div><pre tabindex="0"><code>curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-</code></pre><p>Now, we will setup the repository</p>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+</span></span></code></pre></div><p>Now, we will setup the repository</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>echo <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  <span style="color:#e6db74">&#34;deb [arch=</span><span style="color:#66d9ef">$(</span>dpkg --print-architecture<span style="color:#66d9ef">)</span><span style="color:#e6db74"> signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
 </span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  </span><span style="color:#66d9ef">$(</span>lsb_release -cs<span style="color:#66d9ef">)</span><span style="color:#e6db74"> stable&#34;</span> | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
@@ -216,16 +217,15 @@
 <p>Inside your terminal, within your folder, create the Dockerfile using the nano editor.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano Dockerfile
 </span></span></code></pre></div><p>Type this text inside the editor:</p>
-<pre tabindex="0"><code>FROM python:3.8
-WORKDIR /src
-COPY . /src
-RUN pip install flask
-RUN pip install flask_restful
-EXPOSE 3333
-ENTRYPOINT [&#34;python&#34;]
-CMD [ &#34;python&#34;, &#34;./src/helloworld.py&#34;]
-</code></pre><p><img src="/dockerfile.png" alt="Dockerfile"></p>
-<h2 id="building-the-docker-image">Building the Docker Image</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>FROM python:3.8
+</span></span><span style="display:flex;"><span>WORKDIR /src
+</span></span><span style="display:flex;"><span>COPY . /src
+</span></span><span style="display:flex;"><span>RUN pip install flask
+</span></span><span style="display:flex;"><span>RUN pip install flask_restful
+</span></span><span style="display:flex;"><span>EXPOSE <span style="color:#ae81ff">3333</span>
+</span></span><span style="display:flex;"><span>ENTRYPOINT <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;python&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>CMD <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;./src/helloworld.py&#34;</span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><h2 id="building-the-docker-image">Building the Docker Image</h2>
 <p>From the Dockerfile, we will now build a Docker image.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker build -t helloworldpython .
 </span></span></code></pre></div><p><img src="/docker-build.png" alt="Docker Build"></p>
@@ -239,7 +239,7 @@ CMD [ &#34;python&#34;, &#34;./src/helloworld.py&#34;]
 <p>Every change pushed to the GitHub repository will trigger this chain of events.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano Jenkinsfile
 </span></span></code></pre></div><p>In the nano editor, we will use the following code as our Jenkinsfile.</p>
-<pre tabindex="0"><code>node {
+<pre tabindex="0"><code class="language-nano" data-lang="nano">node {
 	def application = &#34;pythonapp&#34;
 	def dockerhubaccountid = &#34;nyukeit&#34;
 	stage(&#39;Clone repository&#39;) {
@@ -268,11 +268,13 @@ CMD [ &#34;python&#34;, &#34;./src/helloworld.py&#34;]
 }
 </code></pre><h2 id="explaining-the-jenkinsfile">Explaining the Jenkinsfile</h2>
 <p>Our Jenkins pipeline is divided in 5 stages as you can see from the code.</p>
-<p>Stage 1 - Clones our Github repo
-Stage 2 - Builds our Docker image from the Docker File
-Stage 3 - Pushes the image to Docker Hub
-Stage 4 - Deploys the image as a container by pulling it from Docker Hub
-Stage 5 - Removes the old image to stop image pile up.</p>
+<ul>
+<li>Stage 1 - Clones our Github repo</li>
+<li>Stage 2 - Builds our Docker image from the Docker File</li>
+<li>Stage 3 - Pushes the image to Docker Hub</li>
+<li>Stage 4 - Deploys the image as a container by pulling it from Docker Hub</li>
+<li>Stage 5 - Removes the old image to stop image pile up.</li>
+</ul>
 <p>Now that our Jenkinsfile is ready, let&rsquo;s push all of our source code to GitHub.</p>
 <h2 id="pushing-files-to-github">Pushing files to GitHub</h2>
 <p>First, let&rsquo;s check the status of our local repo.</p>
@@ -281,10 +283,8 @@ Stage 5 - Removes the old image to stop image pile up.</p>
 <p>As we can see, there are no commits yet and there are untracked files and folders. Let&rsquo;s tell Git to track them so we can push them to our remote repo.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git add *
 </span></span></code></pre></div><p>This will add all the files present in the git scope.</p>
-<p>Let&rsquo;s once again check the status.</p>
-<p><img src="" alt="Git Status after Add"></p>
-<p>As we can see, Git is now tracking our files and they are ready to be commit. The commit function pushes the files to the staging area where they will be ready to be pushed.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;First commit of the python app&#34;</span>
+<p>Git is now tracking our files and they are ready to be commit. The commit function pushes the files to the staging area where they will be ready to be pushed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;First push of the python app&#34;</span>
 </span></span></code></pre></div><p><img src="/git-commit-first.png" alt="Git Commit"></p>
 <p>Now, it&rsquo;s time to push our files.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git push -u origin main
@@ -329,6 +329,7 @@ Stage 5 - Removes the old image to stop image pile up.</p>
 <p>Click on <strong>Save</strong>.</p>
 <p>Now our Jenkins job is created. It is time to see the whole pipeline in action.</p>
 <p>Click on &lsquo;Build Now&rsquo;. This will trigger all the steps and if we have all the configurations correct, it should have our container running with the python app and our custom image uploaded on Docker Hub. Let&rsquo;s verify this.</p>
+<p><img src="/jenkins-console-output.png" alt="Jenkins Console Output"></p>
 <p><img src="/docker-hub-image-verify.png" alt="Docker Hub Image visible"></p>
 <p>As we can see, our custom built image is now available in our Docker Hub account.</p>
 <p>Now let&rsquo;s verify if the container is running.</p>
