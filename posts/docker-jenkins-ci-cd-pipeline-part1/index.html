@@ -190,7 +190,7 @@
 <p><img src="/github-create-repo.png" alt="Github Create Repo"></p>
 <p>Keep the repository as &lsquo;Public&rsquo; and click on &lsquo;Create Repository&rsquo;</p>
 <h2 id="connecting-to-github">Connecting to GitHub</h2>
-<p>For this tutorial, we will use SSH to connect the local repo to our remote repo. Please note that GitHub has stopped allowing username/password combinations for connections. If you wish to use https instead, you can check out <a href="">this</a> tutorial to connect using Personal Access Tokens.</p>
+<p>For this tutorial, we will use SSH to connect the local repo to our remote repo. Please note that GitHub has stopped allowing username/password combinations for connections. If you wish to use https instead, you can check out <a href="https://www.edgoad.com/2021/02/using-personal-access-tokens-with-git-and-github.html">this</a> tutorial to connect using Personal Access Tokens.</p>
 <p>First we will create an SSH key in our Ubuntu system.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ssh-keygen
 </span></span></code></pre></div><p>Press &rsquo;enter&rsquo; three times without typing anything.</p>
@@ -213,9 +213,11 @@
 </span></span></code></pre></div><p>When prompted, type &lsquo;yes&rsquo;. You should see a message that says &lsquo;You have successfullly authenticated, but GitHub does not provide shell access.&rsquo;</p>
 <p><img src="/github-verify-ssh-conn.png" alt="Github SSH Success"></p>
 <h2 id="python-app">Python App</h2>
-<p>Let&rsquo;s create a very simple Python app that will display Hello World! when executed. The reason why we chose Python over other languages is because it is extremely easy to understand.</p>
-<p>Inside your terminal, make sure you are in the project folder. Create a file name &lsquo;helloworld.py&rsquo; like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano helloworld.py
+<p>Let&rsquo;s create Python app that will display Hello World! in the browser when executed.</p>
+<p>Inside your terminal, make sure you are in the project folder. Create a folder named &lsquo;src&rsquo; and create a file name &lsquo;helloworld.py&rsquo; inside this folder like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir src
+</span></span><span style="display:flex;"><span>cd src
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo nano helloworld.py
 </span></span></code></pre></div><p>Now let&rsquo;s write a Python script! Inside the nano editor, type this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask, request
 </span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> flask_restful <span style="color:#f92672">import</span> Resource, Api
@@ -225,7 +227,7 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Greeting</span> (Resource):
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get</span>(self):
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;Hello World! I am learning DevOps!&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;Hello World!&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>api<span style="color:#f92672">.</span>add_resource(Greeting, <span style="color:#e6db74">&#39;/&#39;</span>) <span style="color:#75715e"># Route_1</span>
 </span></span><span style="display:flex;"><span>
