@@ -2,6 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>/posts/docker-jenkins-ci-cd-pipeline-part2/</loc>
+    <lastmod>2022-11-29T12:06:06+01:00</lastmod>
+  </url><url>
     <loc>/categories/</loc>
     <lastmod>2022-11-29T12:06:06+01:00</lastmod>
   </url><url>
@@ -12,9 +15,6 @@
     <lastmod>2022-11-29T12:06:06+01:00</lastmod>
   </url><url>
     <loc>/tags/docker/</loc>
-    <lastmod>2022-11-29T12:06:06+01:00</lastmod>
-  </url><url>
-    <loc>/posts/docker-jenkins-ci-cd-pipeline-part2/</loc>
     <lastmod>2022-11-29T12:06:06+01:00</lastmod>
   </url><url>
     <loc>/tags/jenkins/</loc>
