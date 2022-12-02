@@ -156,10 +156,10 @@
 <h2 id="jenkins-configuration">Jenkins Configuration</h2>
 <p>We have verified that the Jenkins service is now running. This means we can go ahead and configure it using our browser.</p>
 <p>Open your browser and type this in the address bar:</p>
-<pre tabindex="0"><code>localhost:8080
-</code></pre><p>You should see the Unlock Jenkins page.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>localhost:8080
+</span></span></code></pre></div><p>You should see the Unlock Jenkins page.</p>
 <p><img src="/jenkins-unlock.png" alt="Unlock Jenkins Page"></p>
-<p>Jenkins generated a default password when you installed it. To locate this password we will use the command:</p>
+<p>Jenkins generated a default password when we installed it. To locate this password we will use the command:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 </span></span></code></pre></div><p><img src="/jenkins-initial-password.png" alt="Jenkins Default Password"></p>
 <p>Copy this password and paste it into the box on the welcome page.</p>
